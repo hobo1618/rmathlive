@@ -1,24 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useRef, useEffect, useState } from "react";
+import MathView, { MathViewRef } from "react-math-view";
+import { makeSharedVirtualKeyboard } from "mathlive";
+import { HIGH_SCHOOL_KEYBOARD, HIGH_SCHOOL_KEYBOARD_LAYER } from "./keyboard";
 
 function App() {
+  const ref1 = useRef<MathViewRef>(null);
+  const ref2 = useRef<MathViewRef>(null);
+  const [mf1, setMf1] = useState("")
+  const [mf2, setMf2] = useState("")
+  makeSharedVirtualKeyboard();
+
+  useEffect(() => {
+    ref1.current?.setOptions({
+      "customVirtualKeyboardLayers": HIGH_SCHOOL_KEYBOARD_LAYER,
+      "customVirtualKeyboards": HIGH_SCHOOL_KEYBOARD,
+      "virtualKeyboards": "high-school-keyboard"
+    })
+  },[])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <MathView
+        value={mf1}
+        ref={ref1}
+        useSharedVirtualKeyboard
+        virtualKeyboardMode="onfocus"
+        onInput={() => setMf1(ref1.current?.getValue() || "")}
+      />
+      <MathView
+        value={mf2}
+        ref={ref2}
+        useSharedVirtualKeyboard
+        virtualKeyboardMode="onfocus"
+        onInput={() => setMf2(ref2.current?.getValue() || "")}
+      />
     </div>
   );
 }
